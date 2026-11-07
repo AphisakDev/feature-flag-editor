@@ -69,20 +69,27 @@ export const ATTRIBUTE_SUGGESTIONS = [
   'appVersion',
 ] as const
 
-/** Colour dots used to tell variations apart (same order as the variations list). */
-export const VARIATION_COLORS = [
-  'bg-emerald-500',
-  'bg-orange-500',
-  'bg-sky-500',
-  'bg-violet-500',
-  'bg-pink-500',
-  'bg-amber-400',
-  'bg-teal-400',
-  'bg-rose-600',
+/**
+ * Colour per variation (by position). The emoji mirrors the dot colour so
+ * native `<select>` options can show it too, like the GO Feature Flag editor.
+ */
+export const VARIATION_PALETTE = [
+  { dot: 'bg-emerald-500', emoji: '🟢' },
+  { dot: 'bg-orange-500', emoji: '🟠' },
+  { dot: 'bg-sky-500', emoji: '🔵' },
+  { dot: 'bg-violet-500', emoji: '🟣' },
+  { dot: 'bg-yellow-400', emoji: '🟡' },
+  { dot: 'bg-red-500', emoji: '🔴' },
+  { dot: 'bg-amber-800', emoji: '🟤' },
+  { dot: 'bg-zinc-500', emoji: '⚫' },
 ] as const
 
 export function variationColor(index: number) {
-  return VARIATION_COLORS[index % VARIATION_COLORS.length]
+  return VARIATION_PALETTE[index % VARIATION_PALETTE.length].dot
+}
+
+export function variationEmoji(index: number) {
+  return VARIATION_PALETTE[index % VARIATION_PALETTE.length].emoji
 }
 
 /** Reserved because the "Description" field is written into `metadata.description`. */

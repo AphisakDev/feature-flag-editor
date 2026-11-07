@@ -22,3 +22,10 @@ export const nodePath = (
 export type ServePath =
   | `flags[${number}].defaultRule`
   | `flags[${number}].targeting[${number}].serve`
+
+/** Where a serve config lives. Omit `ruleIndex` for the flag's default rule. */
+export function servePath(flagIndex: number, ruleIndex?: number): ServePath {
+  return ruleIndex === undefined
+    ? `${flagPath(flagIndex)}.defaultRule`
+    : `${rulePath(flagIndex, ruleIndex)}.serve`
+}

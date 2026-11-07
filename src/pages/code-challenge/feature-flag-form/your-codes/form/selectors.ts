@@ -1,6 +1,7 @@
 import type { AnyFormApi } from '@tanstack/react-form'
 
-import { variationColor } from '../model/constants'
+import { variationColor, variationEmoji } from '../model/constants'
+import type { FlagEditorValues } from '../model/schema'
 import { arrayEqual, useFormValue } from './form-hook'
 
 /** Ids of the flags — the flag list re-renders only when flags are added/removed/moved. */
@@ -13,6 +14,8 @@ export type VariationOption = {
   name: string
   /** Tailwind background class for the colour dot. */
   color: string
+  /** Same colour as an emoji, for `<option>` labels. */
+  emoji: string
 }
 
 const optionsEqual = (a: Array<VariationOption>, b: Array<VariationOption>) =>
@@ -35,7 +38,20 @@ export function useVariationOptions(
         id: variation.id,
         name: variation.name.trim() || `(unnamed ${index + 1})`,
         color: variationColor(index),
+        emoji: variationEmoji(index),
       })),
     optionsEqual,
   )
+}
+
+/** Serve config of the default rule (no `ruleIndex`) or of a targeting rule. */
+export function selectServe(
+  values: FlagEditorValues,
+  flagIndex: number,
+  ruleIndex?: number,
+) {
+  const flag = values.flags.at(flagIndex)
+  return ruleIndex === undefined
+    ? flag?.defaultRule
+    : flag?.targeting.at(ruleIndex)?.serve
 }
