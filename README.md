@@ -2,6 +2,22 @@
 
 > Frontend Developer Challenge
 
+## ✅ Submission — Feature Flag Editor
+
+```bash
+pnpm install
+pnpm dev      # http://localhost:3000/code-challenge/feature-flag-form
+pnpm test     # 31 unit + integration tests (Vitest + Testing Library)
+```
+
+- Source: [`src/pages/code-challenge/feature-flag-form/your-codes`](src/pages/code-challenge/feature-flag-form/your-codes)
+- Design decisions, architecture and output format: **[NOTES.md](NOTES.md)**
+- Highlights: recursive AND / OR / NOT condition groups, drag & drop for variations, rules and
+  conditions, percentage & progressive rollouts, multiple flags, Zod validation routed to every
+  field, live Monaco JSON preview with a clickable issues list.
+
+---
+
 ยินดีต้อนรับสู่ **Frontend Test 2026**! โปรเจกต์นี้เป็นข้อสอบสำหรับการคัดเลือก Frontend Developer ซึ่งจะจำลองการพัฒนาแอปพลิเคชันจริงโดยเน้นเรื่อง Architecture, State Management, Validation และการทำ User Interface
 
 > ในปัจจุบันโปรเจกต์จะประกอบไปด้วยการทดสอบหลัก ได้แก่ The Feature Flag Editor
