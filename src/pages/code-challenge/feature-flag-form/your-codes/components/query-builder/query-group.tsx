@@ -53,7 +53,7 @@ export const QueryGroup = withForm({
     handle: undefined as DragHandleProps | undefined,
     onRemove: undefined as (() => void) | undefined,
   },
-  render: function QueryGroup({
+  render: function QueryGroupView({
     form,
     flagIndex,
     ruleIndex,

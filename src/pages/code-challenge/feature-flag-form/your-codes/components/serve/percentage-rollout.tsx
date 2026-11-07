@@ -23,7 +23,7 @@ export const PercentageRollout = withForm({
     ruleIndex: undefined as number | undefined,
     variations: [] as Array<VariationOption>,
   },
-  render: function PercentageRollout({
+  render: function PercentageRolloutView({
     form,
     flagIndex,
     ruleIndex,

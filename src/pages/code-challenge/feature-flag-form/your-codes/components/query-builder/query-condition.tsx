@@ -26,7 +26,7 @@ export const QueryCondition = withForm({
     handle: {} as DragHandleProps,
     onRemove: () => {},
   },
-  render: function QueryCondition({
+  render: function QueryConditionView({
     form,
     flagIndex,
     ruleIndex,

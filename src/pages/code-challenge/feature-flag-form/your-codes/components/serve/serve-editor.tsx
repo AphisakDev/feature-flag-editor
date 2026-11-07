@@ -19,7 +19,7 @@ const SERVE_TYPE_OPTIONS = SERVE_TYPES.map((type) => ({
 export const ServeEditor = withForm({
   ...editorFormOptions,
   props: { flagIndex: 0, ruleIndex: undefined as number | undefined },
-  render: function ServeEditor({ form, flagIndex, ruleIndex }) {
+  render: function ServeEditorView({ form, flagIndex, ruleIndex }) {
     const path = servePath(flagIndex, ruleIndex)
     const type = useFormValue(
       form,

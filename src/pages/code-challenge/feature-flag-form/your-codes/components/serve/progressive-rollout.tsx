@@ -17,7 +17,7 @@ export const ProgressiveRollout = withForm({
     path: 'flags[0].defaultRule' as ServePath,
     variationOptions: [] as Array<SelectOption>,
   },
-  render: function ProgressiveRollout({ form, path, variationOptions }) {
+  render: function ProgressiveRolloutView({ form, path, variationOptions }) {
     return (
       <div className="space-y-3 rounded-lg border bg-muted/30 p-3">
         <p className="text-xs text-muted-foreground">
