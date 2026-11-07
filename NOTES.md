@@ -15,6 +15,7 @@ Code lives in [`src/pages/code-challenge/feature-flag-form/your-codes`](src/page
 | Query builder   | **Recursive groups** (AND / OR / NOT) up to 3 nested levels, 11 GO Feature Flag operators (`eq`, `in`, `pr`…), attribute suggestions (`role`, `group`…), drag to reorder |
 | Serve           | Single variation, **percentage rollout** (live split bar, "split evenly"), **progressive rollout** (start/end date, variation, percentage)                               |
 | Default rule    | Same serve editor as targeting rules                                                                                                                                     |
+| Roles & Groups  | Shared catalog of roles and groups (name + description). Conditions on `role` / `group` show them as clickable chips and are validated against them (`Unknown role "x"`) |
 | Multiple flags  | "Add another flag", output is a map of flags                                                                                                                             |
 | Live preview    | Monaco (read-only) JSON, updates on every keystroke; status badge, copy, export (download) only when valid                                                               |
 | Errors          | Inline under the field + a list in the preview with a breadcrumb (`my-flag › Rule 2 › Condition`); clicking an issue scrolls to and focuses the field                    |
@@ -124,7 +125,19 @@ is generated. Deleting a variation that is still referenced shows "Select a vari
 - The preview uses `form.Subscribe` (it needs everything) plus `useDeferredValue` so keystrokes
   stay responsive while Monaco and validation catch up.
 
-### 5. Small things
+### 5. Roles & Groups ("Group & Role Management")
+
+The challenge asks for managing groups and roles. GO Feature Flag itself has no such
+concept — targeting just compares evaluation-context attributes — so the catalog is
+**editor-only** data (`roles`, `groups` at the top of the form, not written to the JSON):
+
+- Conditions whose attribute is `role` / `group` with `eq`, `ne` or `in` show the defined
+  names as chips (toggle for `in`, replace for `eq` / `ne`).
+- `flagEditorSchema.superRefine` checks every such condition across all flags, so a typo or
+  a renamed / deleted role is reported on the exact condition value.
+- Partial operators (`co`, `sw`, `ew`) are not checked because they match substrings.
+
+### 6. Small things
 
 - Drag & drop: a generic `SortableList` (dnd-kit) that only reports `onMove(from, to)`; works with
   mouse, touch and keyboard (focus the grip, Space, arrows, Space).

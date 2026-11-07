@@ -7,12 +7,12 @@
 ```bash
 pnpm install
 pnpm dev      # http://localhost:3000/code-challenge/feature-flag-form
-pnpm test     # 31 unit + integration tests (Vitest + Testing Library)
+pnpm test     # 37 unit + integration tests (Vitest + Testing Library)
 ```
 
 - Source: [`src/pages/code-challenge/feature-flag-form/your-codes`](src/pages/code-challenge/feature-flag-form/your-codes)
 - Design decisions, architecture and output format: **[NOTES.md](NOTES.md)**
-- Highlights: recursive AND / OR / NOT condition groups, drag & drop for variations, rules and
+- Highlights: recursive AND / OR / NOT condition groups, a Roles & Groups catalog used by conditions, drag & drop for variations, rules and
   conditions, percentage & progressive rollouts, multiple flags, Zod validation routed to every
   field, live Monaco JSON preview with a clickable issues list.
 
