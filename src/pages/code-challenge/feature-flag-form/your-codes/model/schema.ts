@@ -23,9 +23,10 @@ import { validateVariationValue } from './variation-value'
  */
 
 const ID = z.string().min(1)
-const SLUG = /^[\w.-]+$/
+// Patterns accept "" so an empty field only gets the "is required" message.
+const SLUG = /^[\w.-]*$/
 const SLUG_MESSAGE = 'Use only letters, numbers, "_", "-" or "."'
-const ATTRIBUTE = /^[A-Za-z_][\w.-]*$/
+const ATTRIBUTE = /^([A-Za-z_][\w.-]*)?$/
 
 const requiredSlug = (label: string) =>
   z.string().trim().min(1, `${label} is required`).regex(SLUG, SLUG_MESSAGE)

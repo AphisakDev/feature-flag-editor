@@ -25,10 +25,14 @@ describe('flagEditorSchema', () => {
     expect(validateEditor(createEditorValues())).toEqual([])
   })
 
-  it('requires a flag name and reports it on the right field', () => {
+  it('requires a flag name and reports it once, on the right field', () => {
     const values = createEditorValues()
     values.flags[0].key = '   '
-    expect(issuesFor(values)).toContain('flags[0].key: Flag name is required')
+    expect(issuesFor(values)).toEqual(['flags[0].key: Flag name is required'])
+    values.flags[0].key = 'has space'
+    expect(issuesFor(values)).toEqual([
+      'flags[0].key: Use only letters, numbers, "_", "-" or "."',
+    ])
   })
 
   it('still runs cross-field checks when a simple field is invalid', () => {
