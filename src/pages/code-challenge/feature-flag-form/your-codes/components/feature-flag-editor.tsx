@@ -8,6 +8,7 @@ import { createEditorValues, createFlag } from '../model/factories'
 import { toGoffConfig } from '../model/serialize'
 import { editorFormOptions, useAppForm } from '../form/form-hook'
 import { useFlagIds } from '../form/selectors'
+import { AudienceSection } from './audience/audience-section'
 import { FlagCard } from './flag/flag-card'
 import {
   JsonPreviewPanel,
@@ -51,6 +52,7 @@ export function FeatureFlagEditor({
       className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(400px,0.85fr)]"
     >
       <div className="space-y-6">
+        <AudienceSection form={form} />
         {flagIds.map((id, index) => (
           <FlagCard
             key={id}

@@ -114,4 +114,45 @@ describe('<FeatureFlagEditor />', () => {
       'fixed-flag',
     ])
   })
+
+  it('manages roles and lets conditions pick them', async () => {
+    render(<FeatureFlagEditor />)
+
+    // Define a new role in the shared catalog.
+    const roles = screen.getByRole('region', { name: 'Roles' })
+    fireEvent.click(within(roles).getByRole('button', { name: 'Add role' }))
+    const names = within(roles).getAllByPlaceholderText('admin')
+    fireEvent.change(names[names.length - 1], { target: { value: 'auditor' } })
+
+    // A condition on `role` with "In list" shows the roles as chips.
+    fireEvent.click(screen.getByRole('button', { name: /add rule/i }))
+    const rule = screen.getByRole('article', { name: 'Targeting rule 1' })
+    fireEvent.change(within(rule).getByPlaceholderText(/attribute/i), {
+      target: { value: 'role' },
+    })
+    fireEvent.change(within(rule).getByRole('combobox', { name: 'Operator' }), {
+      target: { value: 'in' },
+    })
+    const picker = within(rule).getByRole('group', { name: 'Roles:' })
+    fireEvent.click(within(picker).getByRole('button', { name: 'admin' }))
+    fireEvent.click(within(picker).getByRole('button', { name: 'auditor' }))
+
+    await vi.waitFor(async () => {
+      const json = await previewJson()
+      expect(json.flags['my-first-flag'].targeting[0].query).toBe(
+        'role in ["admin", "auditor"]',
+      )
+    })
+    expect(screen.getByText('Valid')).toBeTruthy()
+
+    // An undefined role is reported on the value field.
+    fireEvent.change(within(rule).getByPlaceholderText('admin, editor'), {
+      target: { value: 'admin, ghost' },
+    })
+    expect(
+      await within(rule).findByText(
+        'Unknown role "ghost" — define it in Roles & Groups',
+      ),
+    ).toBeTruthy()
+  })
 })
