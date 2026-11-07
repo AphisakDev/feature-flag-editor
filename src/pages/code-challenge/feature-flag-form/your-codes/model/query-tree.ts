@@ -45,6 +45,16 @@ export function addGroup(tree: QueryTree, groupId: string): QueryTree {
   })
 }
 
+/** Updates a group's own settings (AND/OR, NOT). */
+export function updateGroup(
+  tree: QueryTree,
+  groupId: string,
+  patch: Partial<Pick<GroupNode, 'combinator' | 'negate'>>,
+): QueryTree {
+  const group = getGroup(tree, groupId)
+  return withNodes(tree, { [group.id]: { ...group, ...patch } })
+}
+
 /** Removes a node and its whole subtree. The root group cannot be removed. */
 export function removeNode(tree: QueryTree, nodeId: string): QueryTree {
   if (nodeId === tree.rootId) return tree
