@@ -13,7 +13,7 @@ const FLAG_TYPE_OPTIONS = FLAG_TYPES.map((type) => ({
 export const FlagSettingsSection = withForm({
   ...editorFormOptions,
   props: { flagIndex: 0 },
-  render: function FlagSettingsSection({ form, flagIndex }) {
+  render: function FlagSettingsSectionView({ form, flagIndex }) {
     const flag = flagPath(flagIndex)
 
     return (

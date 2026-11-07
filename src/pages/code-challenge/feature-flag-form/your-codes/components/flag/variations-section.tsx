@@ -24,7 +24,7 @@ const BOOLEAN_OPTIONS = [
 export const VariationsSection = withForm({
   ...editorFormOptions,
   props: { flagIndex: 0 },
-  render: function VariationsSection({ form, flagIndex }) {
+  render: function VariationsSectionView({ form, flagIndex }) {
     const flag = flagPath(flagIndex)
     const ids = useFormValue(
       form,
@@ -87,7 +87,13 @@ const VariationRow = withForm({
     handle: {} as DragHandleProps,
     canRemove: true,
   },
-  render: function VariationRow({ form, flagIndex, index, handle, canRemove }) {
+  render: function VariationRowView({
+    form,
+    flagIndex,
+    index,
+    handle,
+    canRemove,
+  }) {
     const variation = `${flagPath(flagIndex)}.variations[${index}]` as const
     const type = useFormValue(form, (v) => v.flags[flagIndex]?.type ?? 'string')
 
