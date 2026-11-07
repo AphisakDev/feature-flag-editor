@@ -1,6 +1,7 @@
 import type { FlagType } from './constants'
 import { defaultVariationValue } from './variation-value'
 import type {
+  AudienceEntry,
   ConditionNode,
   FlagEditorValues,
   FlagValues,
@@ -122,6 +123,25 @@ export function createFlag(index = 0): FlagValues {
   }
 }
 
+export function createAudienceEntry(
+  name = '',
+  description = '',
+): AudienceEntry {
+  return { id: createId(), name, description }
+}
+
 export function createEditorValues(): FlagEditorValues {
-  return { flags: [createFlag(0)] }
+  return {
+    // A few common audiences to start from; fully editable in the UI.
+    roles: [
+      createAudienceEntry('admin', 'Full access'),
+      createAudienceEntry('editor', 'Can edit content'),
+      createAudienceEntry('viewer', 'Read-only'),
+    ],
+    groups: [
+      createAudienceEntry('beta-testers', 'Opted in to early features'),
+      createAudienceEntry('internal', 'Company employees'),
+    ],
+    flags: [createFlag(0)],
+  }
 }

@@ -94,3 +94,39 @@ export function variationEmoji(index: number) {
 
 /** Reserved because the "Description" field is written into `metadata.description`. */
 export const RESERVED_METADATA_KEYS = ['description'] as const
+
+/**
+ * Audiences managed in the "Roles & Groups" panel. A condition on the
+ * matching attribute (`role eq "admin"`, `group in ["beta"]`) must reference
+ * one of the defined names.
+ */
+export const AUDIENCE_KINDS = ['roles', 'groups'] as const
+export type AudienceKind = (typeof AUDIENCE_KINDS)[number]
+
+export const AUDIENCE_CONFIG: Record<
+  AudienceKind,
+  { attribute: string; singular: string; title: string; placeholder: string }
+> = {
+  roles: {
+    attribute: 'role',
+    singular: 'role',
+    title: 'Roles',
+    placeholder: 'admin',
+  },
+  groups: {
+    attribute: 'group',
+    singular: 'group',
+    title: 'Groups',
+    placeholder: 'beta-testers',
+  },
+}
+
+/** `role` -> `roles`, `group` -> `groups`, anything else -> undefined. */
+export function audienceKindOf(attribute: string): AudienceKind | undefined {
+  return AUDIENCE_KINDS.find(
+    (k) => AUDIENCE_CONFIG[k].attribute === attribute.trim(),
+  )
+}
+
+/** Operators whose value is compared to a whole role / group name. */
+export const AUDIENCE_OPERATORS: ReadonlyArray<Operator> = ['eq', 'ne', 'in']

@@ -44,7 +44,13 @@ export function describeLocation(
   values: FlagEditorValues,
   path: ReadonlyArray<PropertyKey>,
 ): string {
-  const [, flagIndex, section, itemIndex, ...rest] = path
+  const [root, flagIndex, section, itemIndex, ...rest] = path
+  if (root === 'roles' || root === 'groups') {
+    const label = root === 'roles' ? 'Roles' : 'Groups'
+    return typeof flagIndex === 'number'
+      ? `Roles & Groups › ${label} #${flagIndex + 1}`
+      : 'Roles & Groups'
+  }
   if (typeof flagIndex !== 'number') return 'Editor'
 
   const flag = values.flags.at(flagIndex)

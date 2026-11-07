@@ -55,6 +55,17 @@ export function updateGroup(
   return withNodes(tree, { [group.id]: { ...group, ...patch } })
 }
 
+/** Updates fields of a condition (used by the role / group picker). */
+export function updateCondition(
+  tree: QueryTree,
+  conditionId: string,
+  patch: Partial<Pick<ConditionNode, 'attribute' | 'operator' | 'value'>>,
+): QueryTree {
+  const node = tree.nodes[conditionId] as QueryNode | undefined
+  if (node?.kind !== 'condition') return tree
+  return withNodes(tree, { [conditionId]: { ...node, ...patch } })
+}
+
 /** Removes a node and its whole subtree. The root group cannot be removed. */
 export function removeNode(tree: QueryTree, nodeId: string): QueryTree {
   if (nodeId === tree.rootId) return tree

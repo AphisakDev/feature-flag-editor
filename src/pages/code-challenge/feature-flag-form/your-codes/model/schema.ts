@@ -1,7 +1,11 @@
 import { z } from 'zod'
 
 import {
+  AUDIENCE_CONFIG,
+  AUDIENCE_KINDS,
+  AUDIENCE_OPERATORS,
   COMBINATORS,
+  audienceKindOf,
   FLAG_TYPES,
   OPERATOR_VALUES,
   RESERVED_METADATA_KEYS,
@@ -255,8 +259,25 @@ export const flagSchema = z
     })
   })
 
+/* -------------------------------------------------------------------------- */
+/*                               Roles & Groups                               */
+/* -------------------------------------------------------------------------- */
+
+export const audienceEntrySchema = z.object({
+  id: ID,
+  name: requiredSlug('Name'),
+  description: z.string().max(200, 'Keep the description under 200 characters'),
+})
+
+/* -------------------------------------------------------------------------- */
+/*                                   Editor                                   */
+/* -------------------------------------------------------------------------- */
+
 export const flagEditorSchema = z
   .object({
+    /** Shared by every flag; used by conditions on `role` / `group`. */
+    roles: z.array(audienceEntrySchema),
+    groups: z.array(audienceEntrySchema),
     flags: z.array(flagSchema).min(1, 'Add at least one flag'),
   })
   .superRefine((editor, ctx) => {
@@ -266,7 +287,72 @@ export const flagEditorSchema = z
       'Flag names must be unique',
       ctx,
     )
+    for (const kind of AUDIENCE_KINDS) {
+      reportDuplicates(
+        editor[kind].map((entry) => entry.name.trim()),
+        (index) => [kind, index, 'name'],
+        `${AUDIENCE_CONFIG[kind].title} must be unique`,
+        ctx,
+      )
+    }
+    validateAudienceReferences(editor, ctx)
   })
+
+/**
+ * `role eq "x"` / `group in [...]` must use names defined in Roles & Groups,
+ * so a typo in a role can't silently target nobody.
+ */
+function validateAudienceReferences(
+  editor: FlagEditorValues,
+  ctx: z.RefinementCtx,
+) {
+  const known = Object.fromEntries(
+    AUDIENCE_KINDS.map((kind) => [
+      kind,
+      new Set(editor[kind].map((entry) => entry.name.trim())),
+    ]),
+  ) as Record<(typeof AUDIENCE_KINDS)[number], Set<string>>
+
+  editor.flags.forEach((flag, flagIndex) => {
+    flag.targeting.forEach((rule, ruleIndex) => {
+      for (const node of Object.values(rule.query.nodes)) {
+        if (node.kind !== 'condition') continue
+        const kind = audienceKindOf(node.attribute)
+        if (!kind || !AUDIENCE_OPERATORS.includes(node.operator)) continue
+
+        const values =
+          node.operator === 'in'
+            ? splitListValue(node.value)
+            : [node.value.trim()].filter(Boolean)
+        const unknown = values
+          .map((value) => value.replace(/^"(.*)"$/, '$1'))
+          .filter((value) => !known[kind].has(value))
+
+        if (unknown.length > 0) {
+          const { singular } = AUDIENCE_CONFIG[kind]
+          ctx.addIssue({
+            code: 'custom',
+            path: [
+              'flags',
+              flagIndex,
+              'targeting',
+              ruleIndex,
+              'query',
+              'nodes',
+              node.id,
+              'value',
+            ],
+            message: `Unknown ${singular}${unknown.length > 1 ? 's' : ''} ${unknown
+              .map((v) => `"${v}"`)
+              .join(
+                ', ',
+              )} — define ${unknown.length > 1 ? 'them' : 'it'} in Roles & Groups`,
+          })
+        }
+      }
+    })
+  })
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                   Helpers                                  */
@@ -280,6 +366,16 @@ export function splitListValue(value: string): Array<string> {
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean)
+}
+
+/** Adds `item` to a comma separated list, or removes it if already there. */
+export function toggleListItem(value: string, item: string): string {
+  const items = splitListValue(value)
+  return (
+    items.includes(item)
+      ? items.filter((existing) => existing !== item)
+      : [...items, item]
+  ).join(', ')
 }
 
 function reportDuplicates(
@@ -383,5 +479,6 @@ export type RolloutStep = z.input<typeof rolloutStepSchema>
 export type TargetingRule = z.input<typeof targetingRuleSchema>
 export type Variation = z.input<typeof variationSchema>
 export type MetadataEntry = z.input<typeof metadataEntrySchema>
+export type AudienceEntry = z.input<typeof audienceEntrySchema>
 export type FlagValues = z.input<typeof flagSchema>
 export type FlagEditorValues = z.input<typeof flagEditorSchema>
