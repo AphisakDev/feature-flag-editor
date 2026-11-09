@@ -34,7 +34,7 @@ export const AudienceSection = withForm({
             <code>group</code> can only use these names.
           </p>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2">
+        <CardContent className="grid gap-6">
           {AUDIENCE_KINDS.map((kind) => (
             <AudienceList key={kind} form={form} kind={kind} />
           ))}
